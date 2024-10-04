@@ -18,7 +18,7 @@ options(scipen = 999)
 ```
 
 ```{r}
-my_data = my_data %>% 
+my_data = my_data %>%
   rename(
     Answers = Correct.answers,
     Timoth_estim = Timothy.Answer,
@@ -60,10 +60,10 @@ for (person in people) {
   for (type in types) {
     col_name <- paste0(person, type)
     error_col_name <- paste0(person,type, "_error")
-    
+
     # Create a new column filled with NA
     my_data[[error_col_name]] <- NA
-    
+
     # Calculate error for each row
     for (i in 1:nrow(my_data)) {
       my_data[i, error_col_name] <- calc_error(my_data$Correct_estims[i], my_data[[col_name]][i])
@@ -85,31 +85,28 @@ error_cols <- c(
     "Adrian_estim_error", "Adrian_avera_error",
     "Mean_estim_error", "Mean_avera_error"
 )
-  
+
 # Create new normalized column names
 norm_cols <- paste0("norm_", error_cols)
-  
+
 # Initialize new columns with NA
 for (col in norm_cols) {
     data[[col]] <- NA
   }
-  
+
   # Normalize errors for each row
 for (i in 1:nrow(my_data)) {
   row_errors <- as.numeric(my_data[i, error_cols])
   row_sum <- sum(row_errors, na.rm = TRUE)
-    
+
   if (row_sum > 0) {
       normalized_errors <- row_errors / row_sum
     } else {
       normalized_errors <- rep(0, length(error_cols))
     }
-    
+
   my_data[i, norm_cols] <- normalized_errors
 }
-  
-
-
 ```
 
 New dataframe with the summed normed_errors
@@ -127,8 +124,8 @@ summed_errors <- data.frame(
   Adrian_average = sum(data$norm_Adrian_error_s.guess, na.rm = TRUE),
   Mean_Answer = sum(data$norm_Mean_error_Answer, na.rm = TRUE),
   Mean_average = sum(data$norm_Mean_error_s.guess, na.rm = TRUE)
-  
-  
+
+
 )
 
 summed_errors = summed_errors * 0.1
@@ -164,11 +161,11 @@ data$norm_mean_forecast_error <- NA
 data$norm_mean_guess_error <- NA
 
 for (i in 1:nrow(data)) {
-  all_errors <- c(data[i, grep("_error_", names(data))], 
-                  data$mean_forecast_error[i], 
+  all_errors <- c(data[i, grep("_error_", names(data))],
+                  data$mean_forecast_error[i],
                   data$mean_guess_error[i])
   total_error <- sum(all_errors, na.rm = TRUE)
-  
+
   if (total_error > 0) {
     data$norm_mean_forecast_error[i] <- data$mean_forecast_error[i] / total_error
     data$norm_mean_guess_error[i] <- data$mean_guess_error[i] / total_error
