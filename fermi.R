@@ -35,9 +35,6 @@ print(results)
 
 
 
-
-
-
 # Function to calculate Normalized Mean Absolute Error
 calculate_nmae <- function(actual, forecast) {
   normalization <- pmax(abs(actual), 10)
