@@ -32,6 +32,15 @@ fermi_data <- fermi_data %>%
     )
 ```
 
+chat gpt estimates that one million chickens were shredded in germany last year. Even with the ban, this is just a guess of course. run this cell if you want to use 1 million instead of 0 as the value.
+```{r}
+
+# fermi_data[2, 2] <- 1000000
+
+```
+
+
+
 Function to calculate OOM error
 
 ```{r}
@@ -43,21 +52,21 @@ calc_error <- function(actual, forecast) {
 Add columns for the two mean values
 
 ```{r}
-fermi_data$Mean_of_estimates <- rowMeans(fermi_data[, c(2, 4, 6, 8)], na.rm = TRUE)
-fermi_data$Mean_of_averages <- rowMeans(fermi_data[, c(3, 5, 7, 9)], na.rm = TRUE)
+fermi_data$Mean_of_estimates <- rowMeans(fermi_data[, c(3, 5, 7, 9)], na.rm = TRUE)
+fermi_data$Mean_of_averages <- rowMeans(fermi_data[, c(4, 6, 8, 10)], na.rm = TRUE)
 ```
 
 create results dataframe, where the errors will be stored, and norm_results where the normalized errors will be stored
 
 ```{r}
 people <- c("Timothy", "Markus", "Marvin", "Adrian", "Mean")
-types <- c("_estimate", "_average")
+types <- c("_est", "_ave")
 
 results <- data.frame(matrix(ncol = 10, nrow = 10))
-names(results) <- paste0(rep(people, each = 2), rep(types, times = 5), "_error")
+names(results) <- paste0(rep(people, each = 2), rep(types, times = 5), "_er")
 
 norm_results <- data.frame(matrix(ncol = 10, nrow = 10))
-names(norm_results) <- paste0(rep(people, each = 2), rep(types, times = 5), "_error_normalized")
+names(norm_results) <- paste0(rep(people, each = 2), rep(types, times = 5), "_nor_er")
 ```
 
 calculate the errors and store them in results
@@ -105,27 +114,69 @@ for (j in 2:11) {
     norm_results[11, j] <- sum(norm_results[1:10, j])
 }
 
-norm_results[11, 1] <- "Total_normalized_error"
+norm_results[11, 1] <- "Total_norm_error"
 results[11, 1] <- "Total_error"
 ```
 
 plot normalized results
 
 ```{r}
-
-plot(c(1:10), norm_results[11, 2:11])
-# now as a barchart
-barplot(norm_results[11, 2:11], names.arg = names(norm_results)[2:11], col = "lightblue", main = "Normalized errors", ylab = "Normalized error", xlab = "Person and type of estimate")
-
-```
-
-```{r}
 barplot(
     as.numeric(norm_results[11, 2:11]),
     names.arg = names(norm_results)[2:11],
     col = "lightblue",
-    main = "Normalized Errors",
-    ylab = "Normalized Error",
-    xlab = "Person and Type of Estimate"
+    main = "Everyones total normalized errors",
+    ylab = "Normalized error",
+)
+abline(h = 2.5, col = "red")
+```
+
+plot non normalized results
+
+```{r}
+barplot(
+    as.numeric(results[11, 2:11]),
+    names.arg = names(results)[2:11],
+    col = "lightblue",
+    main = "Everyones total errors",
+    ylab = "error",
+)
+```
+
+plot normalized errors for one person
+
+```{r}
+# 2 = Timothy
+# 4 = Markus
+# 6 = Marvin
+# 8 = Adrian
+person <- 2
+
+barplot(
+    as.numeric(norm_results[1:10, person]),
+    names.arg = norm_results$Row_description[1:10],
+    col = "lightblue",
+    main = "normalized errors for one person",
+    ylab = "Normalized error",
+)
+# The line represents the average normalized error
+abline(h = 0.25, col = "red")
+```
+
+plot non normalized errors for one person
+
+```{r}
+# 2 = Timothy
+# 4 = Markus
+# 6 = Marvin
+# 8 = Adrian
+person <- 2
+
+barplot(
+    as.numeric(results[1:10, person]),
+    names.arg = results$Row_description[1:10],
+    col = "lightblue",
+    main = "erros for one person",
+    ylab = "Normalized error",
 )
 ```
