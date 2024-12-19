@@ -43,7 +43,7 @@ calc_error <- function(actual, forecast) {
 }
 ```
 
-Create columns for the two mean values
+Add columns for the two mean values
 
 ```{r}
 # Calculate mean forecast and mean guess
@@ -51,30 +51,7 @@ my_data$Mean_of_estimates <- rowMeans(my_data[, c("Timothy_estimate", "Markus_es
 my_data$Mean_of_averages <- rowMeans(my_data[, c("Timothy_average", "Markus_average", "Marvin_average", "Adrian_average")], na.rm = TRUE)
 ```
 
-Create columns with errors
-
-```{r}
-# First, let's create the error columns for each person
-people <- c("Timothy", "Markus", "Marvin", "Adrian", "Mean")
-types <- c("_estimate", "_average")
-
-for (person in people) {
-    for (type in types) {
-        col_name <- paste0(person, type)
-        error_col_name <- paste0(person, type, "_error")
-
-        # Create a new column filled with NA
-        my_data[[error_col_name]] <- NA
-
-        # Calculate error for each row
-        for (i in 1:nrow(my_data)) {
-            my_data[i, error_col_name] <- calc_error(my_data$Correct_estimates[i], my_data[[col_name]][i])
-        }
-    }
-}
-```
-
-
+create results dataframe
 
 ```{r}
 # Create results dataframe with errors
@@ -88,8 +65,6 @@ names(results) <- paste0(rep(people, each = 2), rep(types, times = 5), "_error")
 ```
 
 
-
-
 ```{r}
 for (i in 1:10) {
     for (j in 1:10) {
@@ -101,15 +76,20 @@ for (i in 1:10) {
 
 
 ```{r}
-
-
+for (i in 1:10) {
+    sum_row_estimates <- sum(results[i, c(1, 3, 5, 7)], na.rm = TRUE)
+    sum_row_averages <- sum(results[i, c(2, 4, 6, 8)], na.rm = TRUE)
+    for (j in c(1, 3, 5, 7, 9)) {
+        results[i, j] <- results[i, j] / sum_row_estimates
+    }
+    for (j in c(2, 4, 6, 8, 10)) {
+        results[i, j] <- results[i, j] / sum_row_averages
+    }
+}
 
 ```
 
-
-
 ```{r}
-my_data[4, 6]
 
 
 ```
@@ -130,36 +110,6 @@ Create column with normalized errors
 ```{r}
 
 
-# List of error column names
-error_cols <- c(
-    "Timothy_estimate_error", "Timothy_average_error",
-    "Markus_estimate_error", "Markus_average_error",
-    "Marvin_estimate_error", "Marvin_average_error",
-    "Adrian_estimate_error", "Adrian_average_error",
-    "Mean_estimate_error", "Mean_average_error"
-)
-
-# Create new normalized column names
-norm_cols <- paste0("norm_", error_cols)
-
-# Initialize new columns with NA
-for (col in norm_cols) {
-    data[[col]] <- NA
-}
-
-# Normalize errors for each row
-for (i in 1:nrow(my_data)) {
-    row_errors <- as.numeric(my_data[i, error_cols])
-    row_sum <- sum(row_errors, na.rm = TRUE)
-
-    if (row_sum > 0) {
-        normalized_errors <- row_errors / row_sum
-    } else {
-        normalized_errors <- rep(0, length(error_cols))
-    }
-
-    my_data[i, norm_cols] <- normalized_errors
-}
 ```
 
 New dataframe with the summed normed_errors
