@@ -89,102 +89,21 @@ for (i in 1:10) {
 
 ```
 
-```{r}
-
-
-```
-
 
 
 ```{r}
-
-
-
-```
-
-
-
-
-Create column with normalized errors
-
-```{r}
-
-
-```
-
-New dataframe with the summed normed_errors
-
-```{r}
-
-summed_errors <- data.frame(
-    Timothy_Answer = sum(data$norm_Timothy_error_Answer, na.rm = TRUE),
-    Timothy_averagege = sum(data$norm_Timothy_error_s.guess, na.rm = TRUE),
-    Markus_Answer = sum(data$norm_Markus_error_Answer, na.rm = TRUE),
-    Markus_averagege = sum(data$norm_Markus_error_s.guess, na.rm = TRUE),
-    Marvin_Answer = sum(data$norm_Marvin_error_Answer, na.rm = TRUE),
-    Marvin_averagege = sum(data$norm_Marvin_error_s.guess, na.rm = TRUE),
-    Adrian_Answer = sum(data$norm_Adrian_error_Answer, na.rm = TRUE),
-    Adrian_averagege = sum(data$norm_Adrian_error_s.guess, na.rm = TRUE),
-    Mean_Answer = sum(data$norm_Mean_error_Answer, na.rm = TRUE),
-    Mean_averagege = sum(data$norm_Mean_error_s.guess, na.rm = TRUE)
-)
-
-summed_errors <- summed_errors * 0.1
-
-```
-
-Performance of estimates vs averages
-
-```{r}
-
-human_total_error <- summed_errors[1, 1] + summed_errors[1, 3] + summed_errors[1, 5] + summed_errors[1, 7]
-average_total_error <- summed_errors[1, 2] + summed_errors[1, 4] + summed_errors[1, 6] + summed_errors[1, 8]
-
-
-print(human_total_error / 10)
-print(average_total_error / 10)
-
-
-
+# Add empty column to left of results
+new_col <- rep(NA, nrow(results))
+results <- cbind(new_col, results)
+names(results)[1] <- "Row_description"
+results$Row_description <- my_data$Question
 ```
 
 ```{r}
-
-
-
-
-# Calculate errors for mean forecast and mean guess
-data$mean_forecast_error <- sapply(1:nrow(data), function(i) calc_error(data$Correct_estimates[i], data$mean_forecast[i]))
-data$mean_guess_error <- sapply(1:nrow(data), function(i) calc_error(data$Correct_estimates[i], data$mean_guess[i]))
-
-# Normalize these new errors
-data$norm_mean_forecast_error <- NA
-data$norm_mean_guess_error <- NA
-
-for (i in 1:nrow(data)) {
-    all_errors <- c(
-        data[i, grep("_error_", names(data))],
-        data$mean_forecast_error[i],
-        data$mean_guess_error[i]
-    )
-    total_error <- sum(all_errors, na.rm = TRUE)
-
-    if (total_error > 0) {
-        data$norm_mean_forecast_error[i] <- data$mean_forecast_error[i] / total_error
-        data$norm_mean_guess_error[i] <- data$mean_guess_error[i] / total_error
-    } else {
-        data$norm_mean_forecast_error[i] <- 0
-        data$norm_mean_guess_error[i] <- 0
-    }
+# Add a new row with column sums
+for (j in 2:11) {
+    results[11, j] <- sum(results[1:10, j])
 }
 
-# Add to summed_errors dataframe
-summed_errors$mean_forecast <- sum(data$norm_mean_forecast_error, na.rm = TRUE) * 0.1
-summed_errors$mean_guess <- sum(data$norm_mean_guess_error, na.rm = TRUE) * 0.1
-
-# Print results
-cat("Total error for mean forecast:", summed_errors$mean_forecast, "\n")
-cat("Total error for mean guess:", summed_errors$mean_guess, "\n")
-
-
+results[11, 1] <- "Total normalized error"
 ```
