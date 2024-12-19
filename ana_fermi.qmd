@@ -105,6 +105,27 @@ for (j in 2:11) {
     norm_results[11, j] <- sum(norm_results[1:10, j])
 }
 
-norm_results[11, 1] <- "Total normalized error"
-results[11, 1] <- "Total error"
+norm_results[11, 1] <- "Total_normalized_error"
+results[11, 1] <- "Total_error"
+```
+
+plot normalized results
+
+```{r}
+
+plot(c(1:10), norm_results[11, 2:11])
+# now as a barchart
+barplot(norm_results[11, 2:11], names.arg = names(norm_results)[2:11], col = "lightblue", main = "Normalized errors", ylab = "Normalized error", xlab = "Person and type of estimate")
+
+```
+
+```{r}
+barplot(
+    as.numeric(norm_results[11, 2:11]),
+    names.arg = names(norm_results)[2:11],
+    col = "lightblue",
+    main = "Normalized Errors",
+    ylab = "Normalized Error",
+    xlab = "Person and Type of Estimate"
+)
 ```
