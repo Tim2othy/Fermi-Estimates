@@ -4,11 +4,13 @@ format: html
 editor: visual
 ---
 
+# Preliminaries
 Loading libraries
 
 ```{r}
 library(tidyverse)
 library(readxl)
+library(plot3D)
 ```
 
 Loading data, adjusted visual settings, renaming columns
@@ -40,7 +42,6 @@ chat gpt estimates that one million chickens were shredded in germany last year.
 ```
 
 
-
 Function to calculate OOM error
 
 ```{r}
@@ -48,6 +49,8 @@ calc_error <- function(actual, forecast) {
     abs(log10(max(0.01, actual)) - log10(max(0.01, forecast)))
 }
 ```
+
+# Setting up dataframes and calculating errors
 
 Add columns for the two mean values
 
@@ -118,7 +121,9 @@ norm_results[11, 1] <- "Total_norm_error"
 results[11, 1] <- "Total_error"
 ```
 
-plot normalized results
+# Create Plots
+
+plot normalized errors
 
 ```{r}
 barplot(
@@ -131,7 +136,7 @@ barplot(
 abline(h = 2.5, col = "red")
 ```
 
-plot non normalized results
+plot non normalized errors
 
 ```{r}
 barplot(
@@ -150,7 +155,7 @@ plot normalized errors for one person
 # 4 = Markus
 # 6 = Marvin
 # 8 = Adrian
-person <- 2
+person <- 4
 
 barplot(
     as.numeric(norm_results[1:10, person]),
@@ -170,13 +175,31 @@ plot non normalized errors for one person
 # 4 = Markus
 # 6 = Marvin
 # 8 = Adrian
-person <- 2
+person <- 4
 
 barplot(
     as.numeric(results[1:10, person]),
     names.arg = results$Row_description[1:10],
     col = "lightblue",
-    main = "erros for one person",
+    main = "errors for one person",
     ylab = "Normalized error",
+)
+```
+
+create 3d barplot of normalized errors
+
+```{r}
+z <- as.matrix(norm_results[1:10, c(2, 4, 6, 8)])
+
+hist3D(
+    x = rep(1:10),
+    y = rep(1:4),
+    z = z,
+    col = "lightblue",
+    border = "black",
+    xlab = "Questions",
+    ylab = "People",
+    zlab = "Normalized Error",
+    main = "3D Barplot of Normalized Errors"
 )
 ```
