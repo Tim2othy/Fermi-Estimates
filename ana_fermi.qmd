@@ -106,5 +106,5 @@ for (j in 2:11) {
 }
 
 norm_results[11, 1] <- "Total normalized error"
-results[11, 1] <- "Total normalized error"
+results[11, 1] <- "Total error"
 ```
