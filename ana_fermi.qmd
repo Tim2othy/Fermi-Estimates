@@ -74,6 +74,57 @@ for (person in people) {
 }
 ```
 
+
+
+```{r}
+# Create results dataframe with errors
+people <- c("Timothy", "Markus", "Marvin", "Adrian", "Mean")
+types <- c("_estimate", "_average")
+
+results <- data.frame(matrix(ncol = 10, nrow = 10))
+names(results) <- paste0(rep(people, each = 2), rep(types, times = 5), "_error")
+
+
+```
+
+
+
+
+```{r}
+for (i in 1:10) {
+    for (j in 1:10) {
+        results[i, j] <- calc_error(my_data$Answers[i], my_data[i, j + 2])
+    }
+}
+```
+
+
+
+```{r}
+
+
+
+```
+
+
+
+```{r}
+my_data[4, 6]
+
+
+```
+
+
+
+```{r}
+
+
+
+```
+
+
+
+
 Create column with normalized errors
 
 ```{r}
