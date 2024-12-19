@@ -4,7 +4,6 @@ format: html
 editor: visual
 ---
 
-
 Loading libraries
 
 ```{r}
@@ -12,18 +11,13 @@ library(tidyverse)
 library(readxl)
 ```
 
-Loading data, adjusted visual settings
+Loading data, adjusted visual settings, renaming columns
 
 ```{r}
-Fermi_Data_Original <- read_excel("Fermi-Data.xlsx")
-fermi_data <- data.frame(Fermi_Data_Original)
+fermi_data <- read_excel("Fermi-Data.xlsx")
+fermi_data <- data.frame(fermi_data)
 
 options(scipen = 999)
-```
-
-Renaming collumns
-
-```{r}
 fermi_data <- fermi_data %>%
     rename(
         Answers = Correct.answers,
@@ -53,7 +47,7 @@ fermi_data$Mean_of_estimates <- rowMeans(fermi_data[, c(2, 4, 6, 8)], na.rm = TR
 fermi_data$Mean_of_averages <- rowMeans(fermi_data[, c(3, 5, 7, 9)], na.rm = TRUE)
 ```
 
-create results dataframe, where the errors will be stored
+create results dataframe, where the errors will be stored, and norm_results where the normalized errors will be stored
 
 ```{r}
 people <- c("Timothy", "Markus", "Marvin", "Adrian", "Mean")
@@ -61,6 +55,9 @@ types <- c("_estimate", "_average")
 
 results <- data.frame(matrix(ncol = 10, nrow = 10))
 names(results) <- paste0(rep(people, each = 2), rep(types, times = 5), "_error")
+
+norm_results <- data.frame(matrix(ncol = 10, nrow = 10))
+names(norm_results) <- paste0(rep(people, each = 2), rep(types, times = 5), "_error_normalized")
 ```
 
 calculate the errors and store them in results
@@ -71,16 +68,6 @@ for (i in 1:10) {
         results[i, j] <- calc_error(fermi_data$Answers[i], fermi_data[i, j + 2])
     }
 }
-```
-
-create new normalized results dataframe
-
-```{r}
-people <- c("Timothy", "Markus", "Marvin", "Adrian", "Mean")
-types <- c("_estimate", "_average")
-
-norm_results <- data.frame(matrix(ncol = 10, nrow = 10))
-names(norm_results) <- paste0(rep(people, each = 2), rep(types, times = 5), "_error_normalized")
 ```
 
 calculate the normalized errors and store them in norm_results
@@ -98,20 +85,21 @@ for (i in 1:10) {
 }
 ```
 
-Add collumn to the left of norm_results with description of each row
+Add collumn to the left of norm_results and results with description of each row
 
 ```{r}
-# Add empty column to left of results
-new_col <- rep(NA, nrow(norm_results))
+new_col <- rep(NA, nrow(results))
+
+results <- cbind(new_col, results)
 norm_results <- cbind(new_col, norm_results)
+names(results)[1] <- "Row_description"
 names(norm_results)[1] <- "Row_description"
+results$Row_description <- fermi_data$Question
 norm_results$Row_description <- fermi_data$Question
 ```
 
-
 add row to results and norm_results with column sums
 ```{r}
-# Add a new row with column sums
 for (j in 2:11) {
     results[11, j] <- sum(results[1:10, j])
     norm_results[11, j] <- sum(norm_results[1:10, j])
