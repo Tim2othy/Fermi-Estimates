@@ -1,6 +1,6 @@
 ---
 title: "exploring_estimateates"
-format: html
+format: pdf
 editor: source
 ---
 
@@ -10,9 +10,9 @@ Loading libraries
 
 ```{r}
 suppressPackageStartupMessages({
-  library(tidyverse)
-  library(readxl)
-  library(plot3D)
+    library(tidyverse)
+    library(readxl)
+    library(plot3D)
 })
 ```
 
