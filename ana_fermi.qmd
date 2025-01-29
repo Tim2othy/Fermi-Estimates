@@ -1,13 +1,14 @@
 ---
 title: "exploring_estimateates"
 format: html
-editor: visual
+editor: source
 ---
 
 # Preliminaries
+
 Loading libraries
 
-```{r}
+```{r, echo=false, include=false}
 library(tidyverse)
 library(readxl)
 library(plot3D)
@@ -35,12 +36,10 @@ fermi_data <- fermi_data %>%
 ```
 
 chat gpt estimates that one million chickens were shredded in germany last year. Even with the ban, this is just a guess of course. run this cell if you want to use 1 million instead of 0 as the value.
+
 ```{r}
-
 # fermi_data[2, 2] <- 1000000
-
 ```
-
 
 Function to calculate OOM error
 
@@ -111,6 +110,7 @@ norm_results$Row_description <- fermi_data$Question
 ```
 
 add row to results and norm_results with column sums
+
 ```{r}
 for (j in 2:11) {
     results[11, j] <- sum(results[1:10, j])
