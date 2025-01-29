@@ -8,10 +8,12 @@ editor: source
 
 Loading libraries
 
-```{r, echo=false, include=false}
-library(tidyverse)
-library(readxl)
-library(plot3D)
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(readxl)
+  library(plot3D)
+})
 ```
 
 Loading data, adjusted visual settings, renaming columns
